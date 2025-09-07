@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Energy Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <header>
+            <a href="#" class="back-arrow">&#8592;</a>
+            <h1>Solar Energy</h1>
+        </header>
+
+        <div class="current-power">
+            <h2 id="currentPower">5.8 kW</h2>
+            <p>Current Power</p>
+        </div>
+
+        <section class="chart-section">
+            <h3>Energy Produced</h3>
+            <div class="chart">
+                <canvas id="energyChart"></canvas>
+            </div>
+            <div class="tabs">
+                <button class="active" data-type="day">Day</button>
+                <button data-type="week">Week</button>
+                <button data-type="month">Month</button>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="stat">
+                <div class="icon">☀️</div>
+                <p class="value" id="todayValue">32.5</p>
+                <p class="unit">kWh</p>
+                <p class="label">Today</p>
+            </div>
+            <div class="stat">
+                <div class="icon">📅</div>
+                <p class="value" id="monthValue">680</p>
+                <p class="unit">kWh</p>
+                <p class="label">This Month</p>
+            </div>
+            <div class="stat">
+                <div class="icon">📊</div>
+                <p class="value" id="totalValue">24.8</p>
+                <p class="unit">MWh</p>
+                <p class="label">Total</p>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('energyChart').getContext('2d');
+        let chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['6 AM', '', '12 PM', '', '6 PM'],
+                datasets: [{
+                    data: [0, 10, 20, 10, 0],
+                    borderColor: '#FFD54F',
+                    backgroundColor: 'rgba(255, 213, 79, 0.2)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: '#fff' }, grid: { color: '#333' } },
+                    x: { ticks: { color: '#fff' }, grid: { display: false } }
+                }
+            }
+        });
+
+        const tabButtons = document.querySelectorAll('.tabs button');
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelector('.tabs .active').classList.remove('active');
+                btn.classList.add('active');
+                let type = btn.getAttribute('data-type');
+                updateChart(type);
+            });
+        });
+
+        function updateChart(type) {
+            if (type === 'day') {
+                chart.data.labels = ['6 AM', '', '12 PM', '', '6 PM'];
+                chart.data.datasets[0].data = [0, 10, 20, 10, 0];
+                document.getElementById('todayValue').innerText = "32.5";
+                document.getElementById('monthValue').innerText = "680";
+                document.getElementById('totalValue').innerText = "24.8";
+            } else if (type === 'week') {
+                chart.data.labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                chart.data.datasets[0].data = [50, 60, 70, 65, 80, 75, 90];
+                document.getElementById('todayValue').innerText = "72";
+                document.getElementById('monthValue').innerText = "1450";
+                document.getElementById('totalValue').innerText = "25.2";
+            } else if (type === 'month') {
+                chart.data.labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+                chart.data.datasets[0].data = [200, 250, 300, 280];
+                document.getElementById('todayValue').innerText = "105";
+                document.getElementById('monthValue').innerText = "3200";
+                document.getElementById('totalValue').innerText = "26.5";
+            }
+            chart.update();
+        }
+    </script>
+</body>
+</html>
